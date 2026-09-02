@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mostafa Rady — .NET Backend Developer</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg: #0B1220;
+  --panel: #121B2E;
+  --panel-2: #0F1729;
+  --border: #223051;
+  --text: #E7EDF6;
+  --muted: #8A96AC;
+  --teal: #5EEAD4;
+  --teal-dim: rgba(94,234,212,0.12);
+  --amber: #F0B429;
+  --amber-dim: rgba(240,180,41,0.14);
+  --radius: 6px;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --sans: 'Sora', -apple-system, sans-serif;
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+
+html{scroll-behavior:smooth;}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+a{color:inherit; text-decoration:none;}
+
+::selection{background:var(--teal-dim); color:var(--teal);}
+
+:focus-visible{
+  outline:2px solid var(--teal);
+  outline-offset:3px;
+}
+
+.wrap{
+  max-width:960px;
+  margin:0 auto;
+  padding:0 24px;
+}
+
+/* ---------- NAV ---------- */
+header.nav{
+  position:fixed;
+  top:0; left:0; right:0;
+  z-index:100;
+  background:rgba(11,18,32,0.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner{
+  max-width:960px;
+  margin:0 auto;
+  padding:16px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.logo{
+  font-family:var(--mono);
+  font-size:15px;
+  font-weight:600;
+  color:var(--text);
+}
+.logo span{color:var(--teal);}
+.nav-links{
+  display:flex;
+  gap:28px;
+  font-family:var(--mono);
+  font-size:13px;
+  color:var(--muted);
+}
+.nav-links a{transition:color .2s ease;}
+.nav-links a:hover{color:var(--teal);}
+.nav-toggle{
+  display:none;
+  background:none;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  color:var(--text);
+  width:36px; height:36px;
+  font-family:var(--mono);
+  cursor:pointer;
+}
+
+/* ---------- HERO ---------- */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:120px 24px 60px;
+}
+.terminal{
+  max-width:720px;
+  margin:0 auto;
+  width:100%;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  overflow:hidden;
+}
+.terminal-bar{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:12px 16px;
+  background:var(--panel-2);
+  border-bottom:1px solid var(--border);
+}
+.dot{width:10px; height:10px; border-radius:50%;}
+.dot.r{background:#e5534b;}
+.dot.y{background:#e5c53b;}
+.dot.g{background:#3fb950;}
+.terminal-title{
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--muted);
+  margin-left:8px;
+}
+.terminal-body{
+  padding:28px 24px 32px;
+  font-family:var(--mono);
+  font-size:14px;
+  min-height:230px;
+}
+.terminal-body .line{color:var(--muted); margin-bottom:6px;}
+.terminal-body .prompt{color:var(--teal);}
+#typed{color:var(--text); white-space:pre-wrap;}
+.cursor{
+  display:inline-block;
+  width:8px; height:16px;
+  background:var(--amber);
+  vertical-align:middle;
+  margin-left:2px;
+  animation:blink 1s step-start infinite;
+}
+@keyframes blink{50%{opacity:0;}}
+
+.result{
+  margin-top:18px;
+  opacity:0;
+  transform:translateY(6px);
+  transition:opacity .5s ease, transform .5s ease;
+}
+.result.show{opacity:1; transform:translateY(0);}
+.result-row{
+  border-top:1px solid var(--border);
+  padding-top:16px;
+}
+.result-name{
+  font-family:var(--sans);
+  font-size:26px;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:4px;
+}
+.result-role{color:var(--teal); font-size:14px; margin-bottom:14px;}
+.result-fields{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:6px 16px;
+  font-size:13px;
+}
+.result-fields dt{color:var(--muted);}
+.result-fields dd{color:var(--text);}
+.badge{
+  display:inline-block;
+  background:var(--amber-dim);
+  color:var(--amber);
+  border:1px solid rgba(240,180,41,0.35);
+  border-radius:4px;
+  padding:2px 8px;
+  font-size:12px;
+}
+
+.hero-actions{
+  max-width:720px;
+  margin:22px auto 0;
+  width:100%;
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.btn{
+  font-family:var(--mono);
+  font-size:13px;
+  padding:10px 18px;
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  transition:border-color .2s ease, background .2s ease, color .2s ease;
+  cursor:pointer;
+  background:transparent;
+  color:var(--text);
+}
+.btn.primary{
+  background:var(--teal);
+  color:#062421;
+  border-color:var(--teal);
+  font-weight:600;
+}
+.btn.primary:hover{background:#7ff0dc;}
+.btn:not(.primary):hover{border-color:var(--teal); color:var(--teal);}
+
+/* ---------- SECTION LABEL ---------- */
+.section{padding:90px 24px;}
+.section-inner{max-width:960px; margin:0 auto;}
+.sec-label{
+  font-family:var(--mono);
+  font-size:13px;
+  color:var(--teal);
+  margin-bottom:10px;
+}
+.sec-label::before{content:"-- "; color:var(--muted);}
+.sec-title{
+  font-size:28px;
+  font-weight:700;
+  margin-bottom:28px;
+  max-width:600px;
+}
+.sec-intro{
+  color:var(--muted);
+  max-width:600px;
+  margin-bottom:36px;
+  font-size:15px;
+}
+
+/* ---------- ABOUT ---------- */
+.about-text{max-width:640px; font-size:16px; color:#C7D0DF;}
+.about-text p{margin-bottom:16px;}
+
+/* ---------- SKILLS / SCHEMA ---------- */
+.schema-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  gap:16px;
+}
+.table-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.table-head{
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--amber);
+  background:var(--panel-2);
+  padding:10px 14px;
+  border-bottom:1px solid var(--border);
+}
+.table-head::before{content:"TABLE ";color:var(--muted);}
+.table-rows{padding:8px 0;}
+.table-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:7px 14px;
+  font-family:var(--mono);
+  font-size:13px;
+  color:#C7D0DF;
+}
+.table-row .k{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--teal);
+  flex-shrink:0;
+}
+
+/* ---------- PROJECTS ---------- */
+.proj-table{
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.proj-header-row{
+  display:grid;
+  grid-template-columns:40px 1fr 200px 40px;
+  padding:12px 16px;
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--muted);
+  background:var(--panel-2);
+  border-bottom:1px solid var(--border);
+}
+.proj-item{border-bottom:1px solid var(--border);}
+.proj-item:last-child{border-bottom:none;}
+.proj-summary{
+  display:grid;
+  grid-template-columns:40px 1fr 200px 40px;
+  align-items:center;
+  padding:16px;
+  cursor:pointer;
+  background:var(--panel);
+  transition:background .2s ease;
+}
+.proj-summary:hover{background:var(--panel-2);}
+.proj-id{font-family:var(--mono); color:var(--muted); font-size:13px;}
+.proj-name{font-weight:600; font-size:15px;}
+.proj-stack{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--teal);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.proj-chevron{
+  font-family:var(--mono);
+  color:var(--muted);
+  text-align:right;
+  transition:transform .2s ease;
+}
+.proj-item.open .proj-chevron{transform:rotate(90deg); color:var(--teal);}
+.proj-detail{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .3s ease;
+  background:var(--panel-2);
+}
+.proj-item.open .proj-detail{max-height:260px;}
+.proj-detail-inner{
+  padding:4px 16px 22px 96px;
+  font-size:14px;
+  color:#C7D0DF;
+}
+.proj-detail-inner ul{margin:10px 0 14px 18px;}
+.proj-detail-inner li{margin-bottom:6px;}
+.proj-link{
+  font-family:var(--mono);
+  font-size:13px;
+  color:var(--teal);
+  border-bottom:1px solid transparent;
+}
+.proj-link:hover{border-bottom-color:var(--teal);}
+
+/* ---------- TIMELINE / MIGRATIONS ---------- */
+.migrations{position:relative;}
+.migrations::before{
+  content:"";
+  position:absolute;
+  left:9px; top:6px; bottom:6px;
+  width:1px;
+  background:var(--border);
+}
+.migration{
+  position:relative;
+  padding:0 0 30px 34px;
+}
+.migration:last-child{padding-bottom:0;}
+.migration::before{
+  content:"";
+  position:absolute;
+  left:4px; top:4px;
+  width:11px; height:11px;
+  border-radius:50%;
+  background:var(--bg);
+  border:2px solid var(--teal);
+}
+.migration-file{
+  font-family:var(--mono);
+  font-size:13px;
+  color:var(--teal);
+  margin-bottom:6px;
+}
+.migration-desc{font-size:14px; color:#C7D0DF;}
+.migration-tag{
+  display:inline-block;
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--muted);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:1px 7px;
+  margin-top:8px;
+}
+
+/* ---------- CONTACT ---------- */
+.connstr{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.connstr-head{
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--amber);
+  background:var(--panel-2);
+  padding:10px 14px;
+  border-bottom:1px solid var(--border);
+}
+.connstr-body{padding:20px 14px;}
+.cf-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 8px;
+  border-bottom:1px solid var(--border);
+  font-family:var(--mono);
+  font-size:14px;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.cf-row:last-child{border-bottom:none;}
+.cf-key{color:var(--muted);}
+.cf-val a, .cf-val{color:var(--text);}
+.cf-val a:hover{color:var(--teal);}
+
+footer{
+  text-align:center;
+  padding:36px 24px 48px;
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--muted);
+}
+
+@media (max-width:640px){
+  .nav-links{display:none;}
+  .nav-toggle{display:block;}
+  .nav-links.open{
+    display:flex;
+    flex-direction:column;
+    position:absolute;
+    top:100%; left:0; right:0;
+    background:var(--panel);
+    border-bottom:1px solid var(--border);
+    padding:16px 24px;
+    gap:16px;
+  }
+  .result-name{font-size:22px;}
+  .sec-title{font-size:24px;}
+  .proj-header-row, .proj-summary{grid-template-columns:30px 1fr 30px;}
+  .proj-stack{display:none;}
+  .proj-detail-inner{padding-left:16px;}
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  .cursor{animation:none;}
+  *{transition:none !important;}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="logo">mostafa<span>.dev</span></div>
+    <nav class="nav-links" id="navLinks">
+      <a href="#about">about</a>
+      <a href="#stack">stack</a>
+      <a href="#projects">projects</a>
+      <a href="#timeline">timeline</a>
+      <a href="#contact">contact</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="terminal">
+    <div class="terminal-bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="terminal-title">query.sql</span>
+    </div>
+    <div class="terminal-body">
+      <div class="line"><span class="prompt">$</span> run --db=engineers</div>
+      <div id="typed"></div><span class="cursor" id="cursor"></span>
+      <div class="result" id="result">
+        <div class="result-row">
+          <div class="result-name">Mostafa Rady El-Sayed</div>
+          <div class="result-role">.NET Backend Developer &amp; Software Engineering Student</div>
+          <dl class="result-fields">
+            <dt>location</dt><dd>Assiut, Egypt</dd>
+            <dt>stack</dt><dd>C#, ASP.NET Core, EF Core, SQL Server</dd>
+            <dt>university</dt><dd>Assiut University — Faculty of Computers &amp; AI</dd>
+            <dt>status</dt><dd><span class="badge">available for internship</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-actions">
+    <a href="#projects" class="btn primary">view projects</a>
+    <a href="#contact" class="btn">get in touch</a>
+    <a href="https://github.com/mostafa-rady-dev" target="_blank" rel="noopener" class="btn">github ↗</a>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="section-inner">
+    <div class="sec-label">Table: About</div>
+    <h2 class="sec-title">Backend-focused, database-minded</h2>
+    <div class="about-text">
+      <p>I'm a Software Engineering student at Assiut University, specializing in backend development with C# and .NET. Most of my time goes into building web applications with ASP.NET Core MVC, Entity Framework Core, and SQL Server — the kind of work where the database design decides how well everything else holds up.</p>
+      <p>I care about doing things properly under the hood: clean MVC architecture, SOLID principles, well-defined services and interfaces, and migrations that actually make sense six months later. I'm currently looking for a .NET Backend or Software Development internship.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="stack" style="background:var(--panel-2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="sec-label">Table: Skills</div>
+    <h2 class="sec-title">Technical stack</h2>
+    <div class="schema-grid" id="schemaGrid"></div>
+  </div>
+</section>
+
+<section class="section" id="projects">
+  <div class="section-inner">
+    <div class="sec-label">Table: Projects</div>
+    <h2 class="sec-title">Selected work</h2>
+    <p class="sec-intro">Click a row to expand. Each one is a backend-first build — CRUD, relationships, validation, and real architecture, not just a UI on top of a database.</p>
+    <div class="proj-table">
+      <div class="proj-header-row">
+        <span>id</span><span>project</span><span>stack</span><span></span>
+      </div>
+      <div id="projList"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="timeline" style="background:var(--panel-2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="sec-label">Table: Timeline</div>
+    <h2 class="sec-title">Migration history</h2>
+    <p class="sec-intro">Education, training, and certifications — applied the way I'd log any other change: in order, with a reason attached.</p>
+    <div class="migrations" id="migrationList"></div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="section-inner">
+    <div class="sec-label">Table: Contact</div>
+    <h2 class="sec-title">Let's connect</h2>
+    <div class="connstr">
+      <div class="connstr-head">connection_string.env</div>
+      <div class="connstr-body">
+        <div class="cf-row"><span class="cf-key">EMAIL</span><span class="cf-val"><a href="mailto:mostafaradisayed@gmail.com">mostafaradisayed@gmail.com</a></span></div>
+        <div class="cf-row"><span class="cf-key">PHONE</span><span class="cf-val">01142305653</span></div>
+        <div class="cf-row"><span class="cf-key">LINKEDIN</span><span class="cf-val"><a href="https://linkedin.com/in/mostafa-rady-4509602b5" target="_blank" rel="noopener">linkedin.com/in/mostafa-rady-4509602b5</a></span></div>
+        <div class="cf-row"><span class="cf-key">GITHUB</span><span class="cf-val"><a href="https://github.com/mostafa-rady-dev" target="_blank" rel="noopener">github.com/mostafa-rady-dev</a></span></div>
+        <div class="cf-row"><span class="cf-key">LOCATION</span><span class="cf-val">Assiut, Egypt</span></div>
+      </div>
+    </div>
+    <div class="hero-actions" style="margin-top:24px;">
+      <a href="mailto:mostafaradisayed@gmail.com" class="btn primary">send an email</a>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 Mostafa Rady — built with C# on the mind.</footer>
+
+<script>
+// Hero typing effect
+const fullText = "SELECT * FROM engineers WHERE stack = '.NET' AND focus = 'Backend';";
+const typedEl = document.getElementById('typed');
+const cursorEl = document.getElementById('cursor');
+const resultEl = document.getElementById('result');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function typeText(){
+  if(reduceMotion){
+    typedEl.textContent = fullText;
+    resultEl.classList.add('show');
+    cursorEl.style.display='none';
+    return;
+  }
+  let i = 0;
+  const interval = setInterval(()=>{
+    typedEl.textContent = fullText.slice(0, i);
+    i++;
+    if(i > fullText.length){
+      clearInterval(interval);
+      setTimeout(()=> resultEl.classList.add('show'), 200);
+    }
+  }, 28);
+}
+window.addEventListener('DOMContentLoaded', typeText);
+
+// Mobile nav toggle
+document.getElementById('navToggle').addEventListener('click', ()=>{
+  document.getElementById('navLinks').classList.toggle('open');
+});
+document.querySelectorAll('.nav-links a').forEach(a=>{
+  a.addEventListener('click', ()=> document.getElementById('navLinks').classList.remove('open'));
+});
+
+// Skills schema data
+const schema = [
+  { name:"Languages", rows:["C#","Python","JavaScript","HTML5 / CSS3"] },
+  { name:".NET", rows:["ASP.NET Core","ASP.NET Core MVC","RESTful APIs","MVC Architecture"] },
+  { name:"Databases", rows:["SQL Server","MySQL","SQLite","MongoDB"] },
+  { name:"DataAccess", rows:["Entity Framework Core","LINQ","Flask-SQLAlchemy"] },
+  { name:"Frontend", rows:["Bootstrap","Angular","JavaScript"] },
+  { name:"Engineering", rows:["OOP & SOLID","Design Patterns","Data Structures & Algorithms","Database Design"] },
+  { name:"Tools", rows:["Git & GitHub","Docker","Visual Studio","SSMS"] },
+];
+const schemaGrid = document.getElementById('schemaGrid');
+schema.forEach(t=>{
+  const card = document.createElement('div');
+  card.className = 'table-card';
+  card.innerHTML = `
+    <div class="table-head">${t.name}</div>
+    <div class="table-rows">
+      ${t.rows.map(r=>`<div class="table-row"><span class="k"></span>${r}</div>`).join('')}
+    </div>`;
+  schemaGrid.appendChild(card);
+});
+
+// Projects data
+const projects = [
+  {
+    id:"01",
+    name:"Book Lending Library",
+    stack:"ASP.NET Core MVC · C# · EF Core · SQL Server",
+    points:[
+      "Library management system with CRUD operations, database relationships, migrations, and validation.",
+      "Applied OOP, SOLID principles, Services, Interfaces, and ViewModels."
+    ],
+    link:"https://github.com/mostafa-rady-dev/Book-Lending-Library-"
+  },
+  {
+    id:"02",
+    name:"Clinic Management System",
+    stack:"ASP.NET Core MVC · C# · SQL Server",
+    points:[
+      "Clinic management web app with MVC architecture, database operations, validation, and business logic.",
+      "Integrated entities and relationships using Entity Framework Core and SQL Server."
+    ],
+    link:"https://github.com/mostafa-rady-dev/Clinic-Project"
+  },
+  {
+    id:"03",
+    name:"Qvantum — Online Quiz Platform",
+    stack:"Python · Flask · SQLite · Docker",
+    points:[
+      "Online quiz platform with a 6-table relational schema (User, Quiz, Question, Choice, Attempt, UserAnswer) via Flask-SQLAlchemy.",
+      "Server-side scoring, a global leaderboard, and an admin Quiz Studio for building and publishing quizzes, containerized with Docker."
+    ],
+    link:"https://github.com/mostafa-rady-dev/Qvantum-Quiz-System"
+  },
+  {
+    id:"04",
+    name:"Machine Learning Project",
+    stack:"Python · Machine Learning",
+    points:[
+      "Applied data preprocessing, visualization, model training, and evaluation techniques."
+    ],
+    link:"https://github.com/mostafa-rady-dev/Machine-Learning-Project"
+  },
+  {
+    id:"05",
+    name:"XO Game — Minimax Algorithm",
+    stack:"Python · AI · Minimax",
+    points:[
+      "Tic-Tac-Toe game using recursive Minimax search for optimal AI decision-making."
+    ],
+    link:"https://github.com/mostafa-rady-dev/XO-using-the-Minimex-algorithm"
+  },
+];
+const projList = document.getElementById('projList');
+projects.forEach(p=>{
+  const item = document.createElement('div');
+  item.className = 'proj-item';
+  item.innerHTML = `
+    <div class="proj-summary">
+      <span class="proj-id">${p.id}</span>
+      <span class="proj-name">${p.name}</span>
+      <span class="proj-stack">${p.stack}</span>
+      <span class="proj-chevron">›</span>
+    </div>
+    <div class="proj-detail">
+      <div class="proj-detail-inner">
+        <ul>${p.points.map(pt=>`<li>${pt}</li>`).join('')}</ul>
+        <a class="proj-link" href="${p.link}" target="_blank" rel="noopener">view on github ↗</a>
+      </div>
+    </div>`;
+  item.querySelector('.proj-summary').addEventListener('click', ()=>{
+    item.classList.toggle('open');
+  });
+  projList.appendChild(item);
+});
+
+// Migration timeline data
+const migrations = [
+  { file:"20220901_EnrollBSc_SoftwareEngineering.cs", desc:"Started a Bachelor of Science in Software Engineering at Assiut University, Faculty of Computers and Artificial Intelligence.", tag:"education" },
+  { file:"20250601_StartPracticalProjects.cs", desc:"Began building backend-focused web applications with C#, ASP.NET Core MVC, Entity Framework Core, and SQL Server.", tag:"experience" },
+  { file:"20250601_CompleteITI_WebDevelopment.cs", desc:"Completed Web Development training at the Information Technology Institute (ITI).", tag:"training" },
+  { file:"20250601_CompleteStepByStep_FrontEnd.cs", desc:"Completed a Front-End Development course with Step by Step, Assiut.", tag:"training" },
+  { file:"20250920_EarnFrontendAngularDiploma.cs", desc:"Earned a Frontend Angular Development Diploma from Steps Learning (6-month program).", tag:"certification" },
+  { file:"20251001_CompleteDEPI_FullStackDotNet.cs", desc:"Completed the Digital Egypt Pioneers Initiative (DEPI) Full-Stack .NET Development program.", tag:"training" },
+  { file:"20260515_EarnBackendDotNetDiploma.cs", desc:"Earned a Backend .NET Development Diploma from Steps Learning (6-month program).", tag:"certification" },
+];
+const migList = document.getElementById('migrationList');
+migrations.forEach(m=>{
+  const div = document.createElement('div');
+  div.className = 'migration';
+  div.innerHTML = `
+    <div class="migration-file">${m.file}</div>
+    <div class="migration-desc">${m.desc}</div>
+    <span class="migration-tag">${m.tag}</span>`;
+  migList.appendChild(div);
+});
+</script>
+
+</body>
+</html>
